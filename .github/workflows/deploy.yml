@@ -60,7 +60,19 @@ jobs:
         run: npx wrangler d1 migrations apply DB --remote ${{ steps.flag.outputs.env }}
 
       - name: Deploy Worker
-        run: npx wrangler deploy ${{ steps.flag.outputs.env }}
+        run: |
+          set +e
+          npx wrangler deploy ${{ steps.flag.outputs.env }} 2>&1 | tee deploy.log
+          code=${PIPESTATUS[0]}
+          if [ "$code" != "0" ]; then
+            # Surface Cloudflare's error as an annotation so it's readable without the full log
+            msg=$(grep -vE '^\s*$' deploy.log | grep -viE 'token|secret' | tail -12 | tr '\n' ' ' | cut -c1-900)
+            echo "::error title=wrangler deploy failed::$msg"
+            exit $code
+          fi
+          URL=$(grep -oE 'https://[a-z0-9.-]+\.workers\.dev' deploy.log | head -1)
+          echo "::notice title=Deployed::${URL:-see Cloudflare dashboard}"
+          echo "### Live: ${URL}" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Sync runtime secrets
         env:
