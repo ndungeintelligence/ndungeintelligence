@@ -41,7 +41,7 @@ for (const file of pages) {
   const slug = file.replace(/\.html$/, "");
   const path = slug === "index" ? "/" : `/${slug}`;
   const html = layout
-    .replaceAll("{{title}}", meta.title || "Ndunge Intelligence")
+    .replaceAll("{{title}}", meta.title || "Ngomso")
     .replaceAll("{{description}}", meta.description || "Emerging-technology infrastructure, engineered for specific industries.")
     .replaceAll("{{label}}", meta.label || "Infrastructure Intelligence")
     .replaceAll("{{header}}", meta.header || "dark")

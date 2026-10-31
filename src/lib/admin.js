@@ -24,7 +24,7 @@ export async function renderAdmin(env) {
   const pill = (s) => `<span class="pill ${esc(s)}">${esc(s)}</span>`;
 
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex"><title>Admin · Ndunge Intelligence</title>
+<meta name="robots" content="noindex"><title>Admin · Ngomso</title>
 <link rel="icon" href="/assets/brand/favicon.svg">
 <style>
 :root{--ink:#0A0A0B;--paper:#F2F0EC;--line:#E4E1DB;--mute:#8D8A93;--lilac:#8B7BB8;--ember:#C8A27C}
@@ -41,7 +41,7 @@ td.msg{max-width:380px;white-space:pre-wrap}.empty{color:var(--mute);text-align:
 .pill{font-size:11px;padding:2px 8px;border-radius:99px;background:var(--line)}.pill.success{background:#DDEFD9}.pill.initialized{background:#EFE7D8}
 a{color:inherit}
 </style></head><body>
-<header><div>Ndunge <span style="color:var(--mute)">Intelligence</span> · Admin · ${esc(env.ENVIRONMENT || "")}</div><a href="/admin/leads.csv">Export leads CSV</a></header>
+<header><div>Ngomso <span style="color:var(--mute)">Intelligence</span> · Admin · ${esc(env.ENVIRONMENT || "")}</div><a href="/admin/leads.csv">Export leads CSV</a></header>
 <main>
 <div class="k"><div><span>Total leads</span><b>${totals.leads}</b></div><div><span>Leads, last 7 days</span><b>${totals.leads7}</b></div>
 <div><span>Paid revenue</span><b>${formatZAR(totals.revenue)}</b></div><div><span>Labs subscribers</span><b>${totals.subs}</b></div></div>

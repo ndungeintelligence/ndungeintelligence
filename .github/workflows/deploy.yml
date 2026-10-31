@@ -1,9 +1,9 @@
 name: Deploy
 
 # Branch → GitHub environment → Cloudflare Worker
-#   dev   → dev   → ndunge-intelligence-dev
-#   test  → test  → ndunge-intelligence-test
-#   main  → prod  → ndunge-intelligence
+#   dev   → dev   → ngomso-dev
+#   test  → test  → ngomso-test
+#   main  → prod  → ngomso
 on:
   push:
     branches: [dev, test, main]
@@ -82,6 +82,6 @@ jobs:
 
       - name: Summary
         run: |
-          NAME=ndunge-intelligence; if [ "$TARGET" != "prod" ]; then NAME="ndunge-intelligence-$TARGET"; fi
+          NAME=ngomso; if [ "$TARGET" != "prod" ]; then NAME="ngomso-$TARGET"; fi
           echo "### Deployed \`$NAME\` to **$TARGET**" >> "$GITHUB_STEP_SUMMARY"
           echo "Health check: \`https://$NAME.<your-subdomain>.workers.dev/api/health\`" >> "$GITHUB_STEP_SUMMARY"

@@ -1,4 +1,4 @@
--- Ndunge Intelligence core schema
+-- Ngomso core schema
 CREATE TABLE IF NOT EXISTS leads (
   id            TEXT PRIMARY KEY,
   created_at    TEXT NOT NULL DEFAULT (datetime('now')),

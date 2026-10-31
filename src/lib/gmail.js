@@ -1,4 +1,4 @@
-// Send mail as the Ndunge Intelligence Gmail account through the Gmail API.
+// Send mail as the Ngomso Gmail account through the Gmail API.
 // Needs three Worker secrets: GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET, GMAIL_REFRESH_TOKEN
 // (see docs/SETUP.md). If they are missing, sending is skipped and logged — the site keeps working.
 
@@ -77,7 +77,7 @@ export async function sendMail(env, { to, subject, html, text, replyTo, kind = "
   const ownerOnly = env.EMAIL_MODE !== "live";
   const realTo = ownerOnly ? owner : to;
   const realSubject = ownerOnly && to !== owner ? `[${(env.ENVIRONMENT || "dev").toUpperCase()} → ${to}] ${subject}` : subject;
-  const from = `${env.FROM_NAME || "Ndunge Intelligence"} <${owner}>`;
+  const from = `${env.FROM_NAME || "Ngomso"} <${owner}>`;
 
   let ok = 0;
   let detail = "";

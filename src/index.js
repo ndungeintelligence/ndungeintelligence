@@ -1,4 +1,4 @@
-// Ndunge Intelligence — Cloudflare Worker
+// Ngomso — Cloudflare Worker
 // Serves the static site (./dist via the ASSETS binding) and the API below.
 import { OFFERS, findOffer, formatZAR } from "./offers.js";
 import { sendMail, gmailConfigured } from "./lib/gmail.js";
@@ -231,7 +231,7 @@ export default {
       if (pathname === "/admin" || pathname.startsWith("/admin/")) {
         if (!env.ADMIN_PASSWORD) return new Response("Admin is disabled until ADMIN_PASSWORD is set.", { status: 503 });
         if (!adminAuthorized(request, env)) {
-          return new Response("Authentication required", { status: 401, headers: { "www-authenticate": 'Basic realm="Ndunge Intelligence Admin", charset="UTF-8"' } });
+          return new Response("Authentication required", { status: 401, headers: { "www-authenticate": 'Basic realm="Ngomso Admin", charset="UTF-8"' } });
         }
         if (pathname === "/admin/leads.csv") {
           return new Response(await leadsCsv(env), { headers: { "content-type": "text/csv; charset=utf-8", "content-disposition": "attachment; filename=leads.csv" } });

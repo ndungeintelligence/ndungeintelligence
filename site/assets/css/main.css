@@ -1,5 +1,5 @@
 /* ─────────────────────────────────────────────────────────────
-   Ndunge Intelligence — design system
+   Ngomso — design system
    Ink, paper, lilac and an ember node. Dot-grid ground, rounded sheets.
    ───────────────────────────────────────────────────────────── */
 :root {
@@ -188,7 +188,7 @@ body.no-scroll { overflow: hidden; }
 @keyframes beam { 0% { opacity: 0; transform: translateY(-30px); } 20% { opacity: .9; } 60% { opacity: 0; transform: translateY(40px); } 100% { opacity: 0; } }
 .hero__inner { position: relative; z-index: 2; padding: 140px 0 clamp(36px, 6vw, 72px); display: grid; gap: 40px; pointer-events: none; }
 .hero__inner a, .hero__inner button { pointer-events: auto; }
-.hero h1 { max-width: 11ch; }
+.hero h1 { max-width: 14ch; font-size: clamp(42px, 6vw, 88px); }
 .hero__ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
 .hero__foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 24px; border-top: 1px solid var(--line-dark); padding-top: 22px; }
 .status { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; color: rgba(242,240,236,.75); padding: 8px 14px 8px 10px; border-radius: 999px; border: 1px solid var(--line-dark); background: rgba(255,255,255,.04); backdrop-filter: blur(8px); }
@@ -455,3 +455,9 @@ legend { font-size: 13px; color: var(--ink-3); margin-bottom: 8px; padding: 0; }
 .infra canvas, .tile canvas, .case canvas { -webkit-mask-image: linear-gradient(to bottom, #000 40%, rgba(0,0,0,.15) 78%, transparent 92%); mask-image: linear-gradient(to bottom, #000 40%, rgba(0,0,0,.15) 78%, transparent 92%); }
 .tile.b-1 canvas { -webkit-mask-image: none; mask-image: none; }
 .tile.b-1 h3, .tile.b-1 p { position: relative; max-width: 34ch; }
+
+/* dictionary entry (ngomso) */
+.lexeme { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; gap: 6px; color: #fff; pointer-events: none; padding: 24px; }
+.lexeme__word { font-size: clamp(44px, 6vw, 76px); letter-spacing: -.05em; line-height: 1; font-weight: 500; }
+.lexeme__meta { font-family: var(--mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; opacity: .8; }
+.lexeme__def { font-size: 15px; opacity: .9; font-style: italic; }

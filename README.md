@@ -1,4 +1,4 @@
-# Ndunge Intelligence
+# Ngomso
 
 Emerging-technology infrastructure, engineered for specific industries.
 Website, lead capture, automated email and online payments — one Cloudflare Worker.

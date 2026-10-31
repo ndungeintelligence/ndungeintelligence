@@ -16,7 +16,7 @@ function shell({ origin, preheader, heading, body, cta }) {
 <tr><td style="background:#0A0A0B;padding:22px 32px">
   <table role="presentation" cellpadding="0" cellspacing="0"><tr>
     <td><img src="${logo}" width="28" height="28" alt="" style="display:block;border-radius:6px"></td>
-    <td style="padding-left:10px;color:#F2F0EC;font-size:14px;letter-spacing:-0.01em">Ndunge <span style="color:#8D8A93">Intelligence</span></td>
+    <td style="padding-left:10px;color:#F2F0EC;font-size:14px;letter-spacing:-0.01em">Ngomso <span style="color:#8D8A93">Intelligence</span></td>
   </tr></table>
 </td></tr>
 <tr><td style="padding:36px 32px 8px">
@@ -27,7 +27,7 @@ function shell({ origin, preheader, heading, body, cta }) {
   </table>
 </td></tr>
 <tr><td style="padding:28px 32px 32px;font-size:12px;line-height:1.6;color:#8D8A93;border-top:1px solid #EEECE8">
-  Ndunge Intelligence · Emerging-technology infrastructure, engineered for specific industries.<br>
+  Ngomso · Emerging-technology infrastructure, engineered for specific industries.<br>
   Johannesburg, South Africa · <a href="${origin}" style="color:#8D8A93">${esc(origin.replace(/^https?:\/\//, ""))}</a>
 </td></tr>
 </table></td></tr></table></body></html>`;
@@ -39,7 +39,7 @@ const row = (k, v) =>
 export function leadAutoReply({ origin, lead }) {
   const first = esc(String(lead.name).split(" ")[0]);
   return {
-    subject: "We've received your brief — Ndunge Intelligence",
+    subject: "We've received your brief — Ngomso",
     html: shell({
       origin,
       preheader: "Thanks for reaching out. Here's what happens next.",
@@ -49,7 +49,7 @@ export function leadAutoReply({ origin, lead }) {
 <p style="margin:0 0 18px">If it's urgent, simply reply to this email.</p>`,
       cta: { href: `${origin}/infrastructure`, label: "Explore the infrastructure library" },
     }),
-    text: `Thanks, ${lead.name}. Your brief is with us.\n\nWe'll be in touch within one business day.\n\n1. We review your context\n2. A 30-minute call\n3. A short written proposal with a fixed price\n\nReply to this email if it's urgent.\n\nNdunge Intelligence — ${origin}`,
+    text: `Thanks, ${lead.name}. Your brief is with us.\n\nWe'll be in touch within one business day.\n\n1. We review your context\n2. A 30-minute call\n3. A short written proposal with a fixed price\n\nReply to this email if it's urgent.\n\nNgomso — ${origin}`,
   };
 }
 
@@ -106,14 +106,14 @@ ${row("Engagement", payment.offer_name)}${row("Amount", formatZAR(payment.amount
 
 export function subscriberWelcome({ origin }) {
   return {
-    subject: "You're on the Ndunge Labs list",
+    subject: "You're on the Ngomso Labs list",
     html: shell({
       origin,
       preheader: "Field notes on emerging infrastructure, from Johannesburg.",
-      heading: "Welcome to Ndunge Labs.",
+      heading: "Welcome to Ngomso Labs.",
       body: `<p style="margin:0 0 14px">You'll get short, practical field notes when we ship something: new infrastructure blueprints, open tools, and what we're learning about agentic commerce and payments in Africa.</p><p style="margin:0">No spam, and you can reply "unsubscribe" at any time.</p>`,
       cta: { href: `${origin}/labs`, label: "See what we're building" },
     }),
-    text: `Welcome to Ndunge Labs. You'll get short field notes when we ship something. Reply "unsubscribe" any time.\n${origin}/labs`,
+    text: `Welcome to Ngomso Labs. You'll get short field notes when we ship something. Reply "unsubscribe" any time.\n${origin}/labs`,
   };
 }

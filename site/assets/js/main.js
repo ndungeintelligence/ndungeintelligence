@@ -1,4 +1,4 @@
-/* Ndunge Intelligence — interactions & generative visuals (no dependencies) */
+/* Ngomso — interactions & generative visuals (no dependencies) */
 (() => {
   "use strict";
   const $ = (s, r = document) => r.querySelector(s);
