@@ -1,0 +1,12 @@
+{
+  "name": "ndunge-intelligence",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "npm run build && wrangler dev --env dev",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run build && npm run typecheck && wrangler deploy --dry-run --outdir .wrangler/dry",
+    "db:migrate:local": "wrangler d1 migrations apply DB --local --env dev"
+  }
+}

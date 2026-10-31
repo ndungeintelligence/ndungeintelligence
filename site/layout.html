@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en-ZA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{title}}</title>
+<meta name="description" content="{{description}}">
+<meta name="robots" content="{{robots}}">
+<link rel="canonical" href="{{canonical}}">
+<meta name="theme-color" content="#0A0A0B">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{title}}">
+<meta property="og:description" content="{{description}}">
+<meta property="og:image" content="/assets/brand/ndunge-intelligence-lockup-dark-6k.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/main.css?v={{v}}">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"Ndunge Intelligence","description":"Emerging-technology infrastructure, engineered for specific industries.","email":"ndungeintelligence@gmail.com","areaServed":"Africa","address":{"@type":"PostalAddress","addressLocality":"Johannesburg","addressCountry":"ZA"}}</script>
+</head>
+<body data-page="{{page}}" data-header="{{header}}">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header" id="top">
+  <a class="brand" href="/" aria-label="Ndunge Intelligence home">{{mark}}<span>Ndunge <em>Intelligence</em></span></a>
+  <span class="site-header__label">{{label}}</span>
+  <nav class="site-header__nav" aria-label="Primary">
+    <a href="/infrastructure">Infrastructure</a>
+    <a href="/work">Work</a>
+    <a href="/labs">Labs</a>
+    <a href="/engage">Engage</a>
+  </nav>
+  <a class="btn btn--sm btn--header" href="/contact">Start a brief <span aria-hidden="true">→</span></a>
+  <button class="burger" aria-label="Open menu" aria-expanded="false" aria-controls="menu"><span></span><span></span></button>
+</header>
+
+<div class="menu" id="menu" hidden>
+  <div class="menu__sheet">
+    <div class="menu__top">
+      <a class="brand brand--ink" href="/">{{mark}}<span>Ndunge <em>Intelligence</em></span></a>
+      <span class="menu__label">Infrastructure Intelligence</span>
+      <button class="menu__close" aria-label="Close menu"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="1.5"/></svg></button>
+    </div>
+    <div class="menu__body">
+      <nav class="menu__links" aria-label="Menu">
+        <a href="/">Home</a>
+        <a href="/infrastructure">Infrastructure</a>
+        <a href="/work">Work</a>
+        <a href="/labs">Labs</a>
+        <a href="/engage">Engage</a>
+        <a href="/contact">Contact</a>
+      </nav>
+      <div class="menu__visual tone-ink">
+        <canvas data-viz="sphere" aria-hidden="true"></canvas>
+        <div class="menu__quote"><span class="dot"></span>One partner, problem to production:<br><span class="mono">→ assess → architect → build → scale</span></div>
+      </div>
+    </div>
+    <div class="menu__foot">
+      <a href="mailto:ndungeintelligence@gmail.com">ndungeintelligence@gmail.com</a>
+      <span>Johannesburg · Working worldwide</span>
+    </div>
+  </div>
+</div>
+
+<main id="main">
+{{content}}
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__grid">
+    <div class="site-footer__brand">
+      <a class="brand brand--light" href="/">{{mark}}<span>Ndunge <em>Intelligence</em></span></a>
+      <p>Connecting your business problems to profitable emerging-technology patterns — then engineering the infrastructure to run them.</p>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <a href="/infrastructure">Infrastructure library</a>
+      <a href="/work">Selected work</a>
+      <a href="/labs">Ndunge Labs</a>
+      <a href="/engage">Engage &amp; pay</a>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <a href="mailto:ndungeintelligence@gmail.com">ndungeintelligence@gmail.com</a>
+      <a href="/contact">Start a brief</a>
+      <span>Johannesburg, South Africa</span>
+    </div>
+    <div class="site-footer__sub">
+      <h4>Field notes</h4>
+      <p>Short notes when we ship a new blueprint.</p>
+      <form class="inline-form" data-form="subscribe" novalidate>
+        <input type="email" name="email" placeholder="you@company.com" aria-label="Email address" required>
+        <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <input type="hidden" name="source" value="footer">
+        <button class="btn btn--sm btn--light" type="submit">Join</button>
+        <p class="form-status" role="status"></p>
+      </form>
+    </div>
+  </div>
+  <div class="site-footer__base">
+    <span>© {{year}} Ndunge Intelligence. All rights reserved.</span>
+    <a href="#top">Back to top ↑</a>
+  </div>
+</footer>
+
+<dialog class="checkout" id="checkout">
+  <form method="dialog" class="checkout__close-form"><button class="checkout__close" aria-label="Close">×</button></form>
+  <p class="eyebrow">Secure checkout · Paystack</p>
+  <h3 class="checkout__title">Book</h3>
+  <p class="checkout__price"></p>
+  <form data-form="checkout" novalidate>
+    <input type="hidden" name="offer_id">
+    <label>Full name<input name="name" autocomplete="name" required></label>
+    <label>Work email<input name="email" type="email" autocomplete="email" required></label>
+    <label>Company <span class="opt">optional</span><input name="company" autocomplete="organization"></label>
+    <button class="btn btn--ink btn--block" type="submit">Continue to payment <span aria-hidden="true">→</span></button>
+    <p class="form-status" role="status"></p>
+    <p class="fine">You'll be redirected to Paystack to pay by card or other available methods. Prefer EFT or an invoice? <a href="/contact?interest=Invoice">Request one</a>.</p>
+  </form>
+</dialog>
+
+<script src="/assets/js/main.js?v={{v}}" defer></script>
+</body>
+</html>

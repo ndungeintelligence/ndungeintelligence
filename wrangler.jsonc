@@ -1,0 +1,71 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // ── prod (top level) ─────────────────────────────────────────────
+  // Deployed from the `main` branch into the GitHub "prod" environment.
+  "name": "ndunge-intelligence",
+  "main": "src/index.js",
+  "compatibility_date": "2026-06-01",
+  "workers_dev": true,
+  "preview_urls": false,
+  "observability": { "enabled": true },
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash",
+    "run_worker_first": ["/api/*", "/admin", "/admin/*"]
+  },
+  "vars": {
+    "ENVIRONMENT": "prod",
+    "EMAIL_MODE": "live",
+    "NOTIFY_EMAIL": "ndungeintelligence@gmail.com",
+    "FROM_NAME": "Ndunge Intelligence"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ndunge-intelligence-prod",
+      "database_id": "73696395-c8ca-40b8-96cb-d78766663e82",
+      "migrations_dir": "migrations"
+    }
+  ],
+  // Uncomment once your domain is on Cloudflare:
+  // "routes": [{ "pattern": "ndungeintelligence.com", "custom_domain": true }],
+
+  "env": {
+    // ── dev: `dev` branch → worker "ndunge-intelligence-dev" ──────
+    "dev": {
+      "vars": {
+        "ENVIRONMENT": "dev",
+        "EMAIL_MODE": "owner-only",
+        "NOTIFY_EMAIL": "ndungeintelligence@gmail.com",
+        "FROM_NAME": "Ndunge Intelligence (dev)"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "ndunge-intelligence-dev",
+          "database_id": "fccb216a-c636-42f8-898d-4207c5963fcf",
+          "migrations_dir": "migrations"
+        }
+      ]
+    },
+    // ── test: `test` branch → worker "ndunge-intelligence-test" ───
+    "test": {
+      "vars": {
+        "ENVIRONMENT": "test",
+        "EMAIL_MODE": "owner-only",
+        "NOTIFY_EMAIL": "ndungeintelligence@gmail.com",
+        "FROM_NAME": "Ndunge Intelligence (test)"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "ndunge-intelligence-test",
+          "database_id": "05d8281d-3c0d-4850-98bc-c80483e24133",
+          "migrations_dir": "migrations"
+        }
+      ]
+    }
+  }
+}

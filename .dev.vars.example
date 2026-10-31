@@ -1,0 +1,6 @@
+# Copy to .dev.vars for `wrangler dev` (never commit .dev.vars)
+PAYSTACK_SECRET_KEY=sk_test_xxx
+GMAIL_CLIENT_ID=xxx.apps.googleusercontent.com
+GMAIL_CLIENT_SECRET=xxx
+GMAIL_REFRESH_TOKEN=1//xxx
+ADMIN_PASSWORD=choose-a-long-password

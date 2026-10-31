@@ -1,0 +1,87 @@
+name: Deploy
+
+# Branch → GitHub environment → Cloudflare Worker
+#   dev   → dev   → ndunge-intelligence-dev
+#   test  → test  → ndunge-intelligence-test
+#   main  → prod  → ndunge-intelligence
+on:
+  push:
+    branches: [dev, test, main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy"
+        type: choice
+        options: [dev, test, prod]
+        default: dev
+
+concurrency:
+  group: deploy-${{ github.event.inputs.environment || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to ${{ github.event.inputs.environment || (github.ref_name == 'main' && 'prod' || github.ref_name) }}
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.environment || (github.ref_name == 'main' && 'prod' || github.ref_name) }}
+    permissions:
+      contents: read
+    env:
+      TARGET: ${{ github.event.inputs.environment || (github.ref_name == 'main' && 'prod' || github.ref_name) }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Check Cloudflare credentials
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::error::Add CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID as repository (or environment) secrets. See docs/SETUP.md."
+            exit 1
+          fi
+
+      - name: Install tools
+        run: npm install --no-save wrangler@4
+
+      - name: Build site
+        run: node scripts/build.mjs
+
+      - name: Wrangler env flag
+        id: flag
+        run: |
+          if [ "$TARGET" = "prod" ]; then echo "env=" >> "$GITHUB_OUTPUT"; else echo "env=--env $TARGET" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Apply D1 migrations
+        run: npx wrangler d1 migrations apply DB --remote ${{ steps.flag.outputs.env }}
+
+      - name: Deploy Worker
+        run: npx wrangler deploy ${{ steps.flag.outputs.env }}
+
+      - name: Sync runtime secrets
+        env:
+          PAYSTACK_SECRET_KEY: ${{ secrets.PAYSTACK_SECRET_KEY }}
+          GMAIL_CLIENT_ID: ${{ secrets.GMAIL_CLIENT_ID }}
+          GMAIL_CLIENT_SECRET: ${{ secrets.GMAIL_CLIENT_SECRET }}
+          GMAIL_REFRESH_TOKEN: ${{ secrets.GMAIL_REFRESH_TOKEN }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+        run: |
+          node -e '
+            const keys = ["PAYSTACK_SECRET_KEY","GMAIL_CLIENT_ID","GMAIL_CLIENT_SECRET","GMAIL_REFRESH_TOKEN","ADMIN_PASSWORD"];
+            const out = {}; const missing = [];
+            for (const k of keys) (process.env[k] ? (out[k] = process.env[k]) : missing.push(k));
+            require("fs").writeFileSync(".secrets.json", JSON.stringify(out));
+            if (missing.length) console.log("::warning::Not set for this environment (feature stays off): " + missing.join(", "));
+          '
+          if [ "$(cat .secrets.json)" != "{}" ]; then npx wrangler secret bulk .secrets.json ${{ steps.flag.outputs.env }}; fi
+          rm -f .secrets.json
+
+      - name: Summary
+        run: |
+          NAME=ndunge-intelligence; if [ "$TARGET" != "prod" ]; then NAME="ndunge-intelligence-$TARGET"; fi
+          echo "### Deployed \`$NAME\` to **$TARGET**" >> "$GITHUB_STEP_SUMMARY"
+          echo "Health check: \`https://$NAME.<your-subdomain>.workers.dev/api/health\`" >> "$GITHUB_STEP_SUMMARY"

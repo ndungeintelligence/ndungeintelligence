@@ -1,0 +1,78 @@
+<!--meta {"title": "Start a brief — Ndunge Intelligence", "description": "Tell us the business problem. A senior engineer responds within one business day.", "label": "Contact", "header": "dark"} -->
+
+<section class="sheet page-hero tone-ember dotted" aria-label="Contact" style="min-height:clamp(420px,58vh,600px)">
+  <canvas data-viz="field" data-seed="2" data-color="251,246,240" data-x=".8" data-y=".95" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <p class="eyebrow" style="color:rgba(251,246,240,.8)">Start a brief</p>
+    <h1 class="display split-words">Tell us the problem. <span class="dim">We'll find the pattern.</span></h1>
+  </div>
+</section>
+
+<section class="sheet sheet--bare section--tight" aria-label="Contact form">
+  <div class="wrap split split--form">
+    <div class="contact-card" data-reveal>
+      <form class="form" data-form="contact" novalidate>
+        <div class="two">
+          <label>Full name<input name="name" autocomplete="name" required></label>
+          <label>Work email<input name="email" type="email" autocomplete="email" required></label>
+        </div>
+        <div class="two">
+          <label>Company <span class="opt">optional</span><input name="company" autocomplete="organization"></label>
+          <label>Phone / WhatsApp <span class="opt">optional</span><input name="phone" type="tel" autocomplete="tel"></label>
+        </div>
+        <label>Industry
+          <select name="industry">
+            <option value="">Choose one</option>
+            <option>Retail &amp; e-commerce</option><option>Financial services &amp; insurance</option><option>Events &amp; hospitality</option>
+            <option>Professional services</option><option>Education &amp; non-profit</option><option>Manufacturing &amp; logistics</option><option>Other</option>
+          </select>
+        </label>
+        <fieldset>
+          <legend>What are you interested in?</legend>
+          <div class="choice-group">
+            <input type="radio" id="i1" name="interest" value="Agentic commerce" checked><label for="i1">Agentic commerce</label>
+            <input type="radio" id="i2" name="interest" value="Payments"><label for="i2">Payments</label>
+            <input type="radio" id="i3" name="interest" value="AI assistant"><label for="i3">AI assistant</label>
+            <input type="radio" id="i4" name="interest" value="Data & AI platform"><label for="i4">Data &amp; AI platform</label>
+            <input type="radio" id="i5" name="interest" value="Events"><label for="i5">Events</label>
+            <input type="radio" id="i6" name="interest" value="Invoice"><label for="i6">Invoice / EFT</label>
+            <input type="radio" id="i7" name="interest" value="Something else"><label for="i7">Something else</label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Indicative budget</legend>
+          <div class="choice-group">
+            <input type="radio" id="b1" name="budget" value="Under R25k"><label for="b1">Under R25k</label>
+            <input type="radio" id="b2" name="budget" value="R25k–R100k"><label for="b2">R25k–R100k</label>
+            <input type="radio" id="b3" name="budget" value="R100k–R500k"><label for="b3">R100k–R500k</label>
+            <input type="radio" id="b4" name="budget" value="R500k+"><label for="b4">R500k+</label>
+            <input type="radio" id="b5" name="budget" value="Not sure yet" checked><label for="b5">Not sure yet</label>
+          </div>
+        </fieldset>
+        <label>The problem, in your words<textarea name="message" placeholder="What's happening today, what you'd like to happen, and any deadline." required></textarea></label>
+        <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <input type="hidden" name="source" value="contact-page">
+        <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center">
+          <button class="btn btn--ink" type="submit">Send brief <span aria-hidden="true">→</span></button>
+          <p class="form-status" role="status"></p>
+        </div>
+        <p class="fine">We'll only use your details to respond to this enquiry.</p>
+      </form>
+    </div>
+    <aside class="contact-aside">
+      <article class="tile tone-ink" data-reveal>
+        <canvas data-viz="sphere" data-x=".75" data-y=".35" aria-hidden="true"></canvas>
+        <h3>One business day.</h3><p>A senior engineer reads every brief and replies personally — with questions or a time to talk.</p>
+      </article>
+      <div class="direct" data-reveal>
+        <p style="margin:0 0 8px;color:var(--ink)">Prefer email?</p>
+        <a href="mailto:ndungeintelligence@gmail.com">ndungeintelligence@gmail.com</a>
+        <p style="margin:14px 0 0">Johannesburg, South Africa · Working with clients worldwide.</p>
+      </div>
+      <div class="direct" data-reveal>
+        <p style="margin:0 0 8px;color:var(--ink)">Ready to commit?</p>
+        Small engagements can be booked and paid online. <a href="/engage">See fixed-price options</a>.
+      </div>
+    </aside>
+  </div>
+</section>
