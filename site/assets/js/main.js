@@ -159,6 +159,40 @@
     }
   }
 
+  /* ── client portal ─────────────────────────────────── */
+  const portal = $("[data-portal]");
+  if (portal) {
+    const signin = $("[data-portal-signin]"), dash = $("[data-portal-dash]"), title = $("[data-portal-title]");
+    const STAGE_LABEL = { audit: "Audit", setup: "Setup", connected: "Connected", live: "Live" };
+    const show = (d) => {
+      const c = d.client; signin.hidden = true; dash.hidden = false;
+      title.textContent = `Welcome back, ${String(c.name).split(" ")[0]}.`;
+      const set = (k, v) => { const el = $(`[data-p="${k}"]`, dash); if (el) el.textContent = v || "—"; };
+      set("company", c.company || "Your store"); set("name", c.name); set("email", c.email);
+      set("plan", `${d.plan.name} · ${d.plan.monthly}/month`); set("planfit", d.plan.fit); set("store", c.store_url); set("fee", d.settlementFee);
+      const idx = d.stages.indexOf(c.stage);
+      $("[data-stages]", dash).innerHTML = d.stages.map((s, i) => `<li class="${i < idx ? "done" : i === idx ? "now" : ""}"><i></i><span>${STAGE_LABEL[s]}</span></li>`).join("");
+    };
+    const loadMe = () => fetch("/api/portal/me", { credentials: "same-origin" }).then((r) => r.ok ? r.json() : null).then((d) => { if (d && d.ok) show(d); }).catch(() => {});
+    const token = new URLSearchParams(location.search).get("token");
+    if (token) {
+      history.replaceState(null, "", "/portal");
+      fetch("/api/portal/verify", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ token }), credentials: "same-origin" })
+        .then((r) => r.json()).then((d) => { if (d.ok) loadMe(); else setStatus($('form[data-form="portal-login"]'), d.error, "err"); })
+        .catch(() => setStatus($('form[data-form="portal-login"]'), "Network error — please try again.", "err"));
+    } else loadMe();
+    const lf = $('form[data-form="portal-login"]');
+    lf && lf.addEventListener("submit", async (e) => {
+      e.preventDefault(); clearErrors(lf); busy(lf, true, "Sending…");
+      const r = await post("/api/portal/login", lf);
+      if (r.offline) setStatus(lf, `Sign-in isn't available on this preview. Email ${OWNER} for help.`, "err");
+      else if (r.body.ok) setStatus(lf, r.body.message, "ok");
+      else { showErrors(lf, r.body.errors); setStatus(lf, r.body.error || "Please check your email address.", "err"); }
+      busy(lf, false);
+    });
+    $("[data-portal-logout]") && $("[data-portal-logout]").addEventListener("click", () => fetch("/api/portal/logout", { method: "POST", credentials: "same-origin" }).then(() => location.reload()));
+  }
+
   $$("[data-year]").forEach((e) => (e.textContent = new Date().getFullYear()));
 
   /* ══════════════════════════════════════════════════════

@@ -5,6 +5,7 @@ import { sendMail, gmailConfigured } from "./lib/gmail.js";
 import { initializeTransaction, verifyTransaction, validSignature, paystackConfigured } from "./lib/paystack.js";
 import * as T from "./lib/templates.js";
 import { renderAdmin, leadsCsv } from "./lib/admin.js";
+import * as Portal from "./lib/portal.js";
 
 const SECURITY_HEADERS = {
   "x-content-type-options": "nosniff",
@@ -226,6 +227,10 @@ export default {
       if (pathname === "/api/checkout" && method === "POST") return handleCheckout(request, env, origin);
       if (pathname === "/api/checkout/verify" && method === "GET") return handleVerify(url, env, ctx, origin);
       if (pathname === "/api/paystack/webhook" && method === "POST") return handleWebhook(request, env, ctx, origin);
+      if (pathname === "/api/portal/login" && method === "POST") return Portal.requestLogin(request, env, ctx, origin, await readBody(request));
+      if (pathname === "/api/portal/verify" && method === "POST") return Portal.verifyLogin(env, String((await readBody(request)).token || ""));
+      if (pathname === "/api/portal/me" && method === "GET") return Portal.me(request, env);
+      if (pathname === "/api/portal/logout" && method === "POST") return Portal.logout(request, env);
       if (pathname.startsWith("/api/")) return json({ ok: false, error: "Not found" }, 404);
 
       if (pathname === "/admin" || pathname.startsWith("/admin/")) {
@@ -236,7 +241,11 @@ export default {
         if (pathname === "/admin/leads.csv") {
           return new Response(await leadsCsv(env), { headers: { "content-type": "text/csv; charset=utf-8", "content-disposition": "attachment; filename=leads.csv" } });
         }
-        return new Response(await renderAdmin(env), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", ...SECURITY_HEADERS } });
+        if (pathname === "/admin/clients" && method === "POST") {
+          const problem = await Portal.onboardClient(env, ctx, origin, await request.formData());
+          return Response.redirect(`${origin}/admin${problem ? "?error=" + encodeURIComponent(problem) : "?onboarded=1"}#clients`, 303);
+        }
+        return new Response(await renderAdmin(env, url), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", ...SECURITY_HEADERS } });
       }
 
       return env.ASSETS.fetch(request);

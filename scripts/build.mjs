@@ -3,7 +3,7 @@
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, cpSync, rmSync, statSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { OFFERS, formatZAR } from "../src/offers.js";
+import { OFFERS, PRICE_BOOK as P, formatZAR, formatUSD } from "../src/offers.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SITE = join(root, "site");
@@ -31,13 +31,32 @@ const offersHtml = OFFERS.map(
 </article>`,
 ).join("\n");
 
+const tierCards = P.tiers.map((t, i) => `<article class="tier${i === 1 ? " tier--featured" : ""}" data-reveal>
+  <span class="chip">${t.name}</span>
+  <p class="tier__price">${formatZAR(t.monthly)}<small>/month</small></p>
+  <p class="tier__usd">≈ ${formatUSD(t.monthly)} per month</p>
+  <p class="tier__fit">${t.fit}</p>
+</article>`).join("\n");
+const pricingHtml = `<div class="tiers">${tierCards}</div>
+<table class="pricebook">
+  <tr><th>Agentic Commerce OS</th><th class="n">Price</th><th>What it covers</th></tr>
+  <tr><td>Agent-Readiness Audit</td><td class="n">${formatZAR(P.audit)}</td><td>Scored report and fix list. Credited against Setup.</td></tr>
+  <tr><td>Agent-Readiness Setup</td><td class="n">${formatZAR(P.setup)} once-off</td><td>We clean your catalogue and switch on AI shopping channels.</td></tr>
+  <tr><td>Connector subscription</td><td class="n">${formatZAR(P.tiers[0].monthly)}–${formatZAR(P.tiers[2].monthly)}/month</td><td>Keeps your store readable and buyable by AI agents. Tiers above.</td></tr>
+  <tr><td>Settlement</td><td class="n">${(P.settlementFee * 100).toFixed(2)}%</td><td>Of sales made through AI agents and settled by us in rand.</td></tr>
+</table>`;
+const PRICES = { "{{price.audit}}": formatZAR(P.audit), "{{price.setup}}": formatZAR(P.setup), "{{price.session}}": formatZAR(P.strategySession),
+  "{{price.launch}}": formatZAR(P.tiers[0].monthly), "{{price.scale}}": formatZAR(P.tiers[2].monthly), "{{price.blended}}": formatZAR(P.blendedMonthly),
+  "{{price.settle}}": (P.settlementFee * 100).toFixed(2) + "%", "{{price.sprint}}": formatZAR(P.sprint) };
+const fillPrices = (s) => Object.entries(PRICES).reduce((acc, [k, v]) => acc.replaceAll(k, v), s);
+
 const pages = readdirSync(join(SITE, "pages")).filter((f) => f.endsWith(".html"));
 const urls = [];
 for (const file of pages) {
   const src = readFileSync(join(SITE, "pages", file), "utf8");
   const m = src.match(/^<!--meta\s+(\{[\s\S]*?\})\s*-->/);
   const meta = m ? JSON.parse(m[1]) : {};
-  const body = src.slice(m ? m[0].length : 0).replaceAll("{{offers}}", offersHtml).replaceAll("{{mark}}", mark);
+  const body = fillPrices(src.slice(m ? m[0].length : 0).replaceAll("{{offers}}", offersHtml).replaceAll("{{pricing}}", pricingHtml).replaceAll("{{mark}}", mark));
   const slug = file.replace(/\.html$/, "");
   const path = slug === "index" ? "/" : `/${slug}`;
   const html = layout

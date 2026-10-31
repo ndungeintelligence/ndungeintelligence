@@ -118,7 +118,7 @@ let reference;
 await test("checkout initializes Paystack", async () => {
   const r = await jpost("/api/checkout", { offer_id: "agent-readiness-audit", name: "Sipho Dube", email: "sipho@example.com" });
   const b = await r.json(); assert.equal(r.status, 200); assert.match(b.authorization_url, /checkout\.paystack\.com/); reference = b.reference;
-  assert.equal(sqlite.prepare("SELECT amount_cents a FROM payments WHERE reference=?").get(reference).a, 750000);
+  assert.equal(sqlite.prepare("SELECT amount_cents a FROM payments WHERE reference=?").get(reference).a, 1250000);
 });
 await test("checkout rejects unknown offer", async () => assert.equal((await jpost("/api/checkout", { offer_id: "free-stuff", name: "X Y", email: "x@y.co" })).status, 422));
 await test("webhook rejects bad signature", async () => assert.equal((await jpost("/api/paystack/webhook", { event: "charge.success", data: { reference } }, { "x-paystack-signature": "nope" })).status, 401));
@@ -131,12 +131,56 @@ await test("webhook marks paid and sends receipt once", async () => {
   assert.equal(sqlite.prepare("SELECT status s FROM payments WHERE reference=?").get(reference).s, "success");
   assert.equal(sent.length, 2, "receipt + owner notification, exactly once");
 });
-await test("verify endpoint", async () => { const b = await (await call(`/api/checkout/verify?reference=${reference}`)).json(); assert.equal(b.status, "success"); assert.equal(b.amount, "R7 500"); });
+await test("verify endpoint", async () => { const b = await (await call(`/api/checkout/verify?reference=${reference}`)).json(); assert.equal(b.status, "success"); assert.equal(b.amount, "R12,500"); });
 await test("admin requires auth", async () => {
   assert.equal((await call("/admin")).status, 401);
   const ok = await call("/admin", { headers: { authorization: "Basic " + btoa("admin:local-admin") } });
   assert.equal(ok.status, 200); assert.match(await ok.text(), /Thandi Mokoena/);
   assert.equal((await call("/admin/leads.csv", { headers: { authorization: "Basic " + btoa("admin:local-admin") } })).status, 200);
+});
+const AUTH = { authorization: "Basic " + btoa("admin:local-admin") };
+await test("pricing is uniform on the Engage page", async () => {
+  const html = await (await call("/engage")).text();
+  for (const p of ["R12,500", "R25,000", "R2,500", "R5,500", "R0.75%".slice(1), "Agentic Commerce OS"]) assert.ok(html.includes(p), p);
+  assert.ok(!html.includes("R7,500") && !html.includes("R1,500"), "old prices gone");
+});
+let inviteToken;
+await test("admin onboards a client and emails an invite", async () => {
+  sent.length = 0;
+  const form = new URLSearchParams({ name: "Lerato Khumalo", email: "lerato@shop.co.za", company: "Kasi Kicks", store_url: "https://kasikicks.co.za", plan: "growth", stage: "setup", invite: "1" });
+  const r = await call("/admin/clients", { method: "POST", headers: { ...AUTH, "content-type": "application/x-www-form-urlencoded" }, body: form });
+  assert.equal(r.status, 303);
+  assert.equal(sqlite.prepare("SELECT plan FROM clients WHERE email=?").get("lerato@shop.co.za").plan, "growth");
+  assert.equal(sent.length, 1);
+  const body = Buffer.from(sent[0].raw.split("\r\n\r\n").slice(1).join("").match(/base64\r\n\r\n([\s\S]*?)\r\n--/)?.[1] || "", "base64").toString();
+  inviteToken = (sent[0].raw.match(/token=([a-f0-9]{64})/) || Buffer.from(sent[0].raw.replace(/\r\n/g, "").split("base64").pop(), "base64").toString().match(/token=([a-f0-9]{64})/) || [])[1];
+  if (!inviteToken) { const all = [...sent[0].raw.matchAll(/\r\n\r\n([A-Za-z0-9+\/=\r\n]+?)\r\n--/g)].map((m) => Buffer.from(m[1].replace(/\r\n/g, ""), "base64").toString()).join(" "); inviteToken = (all.match(/token=([a-f0-9]{64})/) || [])[1]; }
+  assert.ok(inviteToken, "invite link contains a token");
+});
+await test("portal: unknown email gets the same answer and no email", async () => {
+  sent.length = 0;
+  const r = await jpost("/api/portal/login", { email: "stranger@example.com" });
+  assert.equal(r.status, 200); assert.equal(sent.length, 0);
+});
+let cookie;
+await test("portal: invite link signs the client in once", async () => {
+  const r = await jpost("/api/portal/verify", { token: inviteToken });
+  assert.equal(r.status, 200);
+  cookie = r.headers.get("set-cookie").split(";")[0];
+  assert.match(cookie, /^ni_session=[a-f0-9]{64}$/);
+  assert.equal((await jpost("/api/portal/verify", { token: inviteToken })).status, 400, "token cannot be reused");
+});
+await test("portal: dashboard data for the signed-in client", async () => {
+  const d = await (await call("/api/portal/me", { headers: { cookie } })).json();
+  assert.equal(d.client.company, "Kasi Kicks"); assert.equal(d.plan.name, "Growth"); assert.equal(d.plan.monthly, "R5,500"); assert.equal(d.client.stage, "setup");
+  assert.equal((await call("/api/portal/me")).status, 401);
+});
+await test("portal: login email for an onboarded client, then logout", async () => {
+  sent.length = 0;
+  await jpost("/api/portal/login", { email: "LERATO@shop.co.za" });
+  assert.equal(sent.length, 1);
+  await call("/api/portal/logout", { method: "POST", headers: { cookie } });
+  assert.equal((await call("/api/portal/me", { headers: { cookie } })).status, 401);
 });
 await test("email still logs when Gmail secrets missing", async () => {
   const saved = env.GMAIL_REFRESH_TOKEN; delete env.GMAIL_REFRESH_TOKEN;

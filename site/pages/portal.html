@@ -1,0 +1,44 @@
+<!--meta {"title": "Client portal — Ngomso Intelligence", "description": "Sign in to the Agentic Commerce OS client portal.", "label": "Client portal", "header": "dark", "noindex": true} -->
+
+<section class="sheet page-hero tone-ink" aria-label="Client portal" style="min-height:clamp(360px,46vh,480px)">
+  <canvas data-viz="network" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <p class="eyebrow" style="color:rgba(242,240,236,.6)">Agentic Commerce OS · Client portal</p>
+    <h1 class="display" style="font-size:clamp(40px,5.4vw,76px)" data-portal-title>Welcome back.</h1>
+  </div>
+</section>
+
+<section class="sheet section--tight" aria-label="Portal">
+  <div class="wrap" data-portal>
+    <div class="portal-card" data-portal-signin>
+      <h2 class="h3">Sign in</h2>
+      <p class="lede" style="font-size:15px;margin:8px 0 18px">For businesses onboarded onto the Agentic Commerce OS. Enter the email we onboarded you with and we'll send a one-time sign-in link.</p>
+      <form class="form" data-form="portal-login" novalidate>
+        <label for="portal-email">Work email<input id="portal-email" name="email" type="email" autocomplete="email" placeholder="you@yourstore.co.za" required></label>
+        <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center">
+          <button class="btn btn--ink" type="submit">Email me a sign-in link <span aria-hidden="true">→</span></button>
+          <p class="form-status" role="status"></p>
+        </div>
+      </form>
+      <p class="fine" style="margin-top:18px">Not a client yet? <a href="/engage#pricing">See the Agentic Commerce OS</a> or <a href="/contact?interest=Agentic%20commerce">start a brief</a>.</p>
+    </div>
+
+    <div class="portal-dash" data-portal-dash hidden>
+      <div class="portal-top">
+        <div>
+          <p class="eyebrow">Your account</p>
+          <h2 class="h2" data-p="company">Your store</h2>
+          <p class="lede" style="font-size:15px;margin-top:6px"><span data-p="name"></span> · <span data-p="email"></span></p>
+        </div>
+        <button class="btn btn--ghost btn--sm" data-portal-logout>Sign out</button>
+      </div>
+      <ol class="stages" data-stages></ol>
+      <div class="portal-grid">
+        <div class="portal-card"><span class="k">Plan</span><p class="portal-big" data-p="plan">—</p><p class="fine" data-p="planfit"></p></div>
+        <div class="portal-card"><span class="k">Store</span><p class="portal-big" style="font-size:20px;word-break:break-all" data-p="store">—</p><p class="fine">Connected to AI shopping agents through the Agentic Commerce OS.</p></div>
+        <div class="portal-card"><span class="k">Settlement fee</span><p class="portal-big" data-p="fee">—</p><p class="fine">On sales made through AI agents and settled in rand.</p></div>
+      </div>
+      <div class="portal-card" style="margin-top:14px"><span class="k">Need help?</span><p style="margin:8px 0 0">Email <b style="user-select:all">ndungeintelligence@gmail.com</b> and a senior engineer will reply within one business day.</p></div>
+    </div>
+  </div>
+</section>

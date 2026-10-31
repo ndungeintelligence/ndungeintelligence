@@ -1,9 +1,10 @@
 // Minimal private dashboard at /admin (HTTP Basic auth: user "admin", password = ADMIN_PASSWORD secret).
 import { esc } from "./templates.js";
-import { formatZAR } from "../offers.js";
+import { formatZAR, PRICE_BOOK } from "../offers.js";
 
-export async function renderAdmin(env) {
-  const [leads, payments, subs, mail, totals] = await Promise.all([
+export async function renderAdmin(env, url) {
+  const [clients, leads, payments, subs, mail, totals] = await Promise.all([
+    env.DB.prepare("SELECT * FROM clients ORDER BY created_at DESC LIMIT 500").all(),
     env.DB.prepare("SELECT * FROM leads ORDER BY created_at DESC LIMIT 200").all(),
     env.DB.prepare("SELECT * FROM payments ORDER BY created_at DESC LIMIT 200").all(),
     env.DB.prepare("SELECT * FROM subscribers ORDER BY created_at DESC LIMIT 200").all(),
@@ -40,11 +41,36 @@ th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vert
 td.msg{max-width:380px;white-space:pre-wrap}.empty{color:var(--mute);text-align:center;padding:28px}
 .pill{font-size:11px;padding:2px 8px;border-radius:99px;background:var(--line)}.pill.success{background:#DDEFD9}.pill.initialized{background:#EFE7D8}
 a{color:inherit}
+.onboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;background:#fff;border-radius:16px;padding:16px;margin-bottom:12px;align-items:end}
+.onboard label{display:grid;gap:4px;font-size:12px;color:var(--mute)}
+.onboard input,.onboard select{font:inherit;padding:9px 10px;border:1px solid #CFCAC2;border-radius:10px;background:#fff;color:var(--ink)}
+.onboard .chk{display:flex;align-items:center;gap:8px;color:var(--ink)}
+.onboard button{font:inherit;background:var(--ink);color:var(--paper);border:0;border-radius:99px;padding:10px 18px;cursor:pointer}
+.ok{color:#2F7A47}.bad{color:#B5473D}.pill.live,.pill.connected{background:#DDEFD9}
 </style></head><body>
 <header><div>Ngomso <span style="color:var(--mute)">Intelligence</span> · Admin · ${esc(env.ENVIRONMENT || "")}</div><a href="/admin/leads.csv">Export leads CSV</a></header>
 <main>
 <div class="k"><div><span>Total leads</span><b>${totals.leads}</b></div><div><span>Leads, last 7 days</span><b>${totals.leads7}</b></div>
 <div><span>Paid revenue</span><b>${formatZAR(totals.revenue)}</b></div><div><span>Labs subscribers</span><b>${totals.subs}</b></div></div>
+<h2 id="clients">Agentic Commerce OS clients</h2>
+${url && url.searchParams.get("onboarded") ? '<p class="ok">Client saved.</p>' : ""}${url && url.searchParams.get("error") ? `<p class="bad">${esc(url.searchParams.get("error"))}</p>` : ""}
+<form class="onboard" method="post" action="/admin/clients">
+  <label>Name<input name="name" required></label>
+  <label>Email<input name="email" type="email" required></label>
+  <label>Company<input name="company"></label>
+  <label>Store URL<input name="store_url" placeholder="https://"></label>
+  <label>Plan<select name="plan">${PRICE_BOOK.tiers.map((t) => `<option value="${t.id}">${t.name} — ${formatZAR(t.monthly)}/month</option>`).join("")}</select></label>
+  <label>Stage<select name="stage"><option value="audit">Audit</option><option value="setup">Setup</option><option value="connected">Connected</option><option value="live">Live</option></select></label>
+  <label class="chk"><input type="checkbox" name="invite" value="1" checked> Email a portal invitation</label>
+  <button type="submit">Save client</button>
+</form>
+${t(clients, [
+    ["Onboarded", (r) => esc(r.created_at)],
+    ["Client", (r) => `${esc(r.name)}<br><a href="mailto:${esc(r.email)}">${esc(r.email)}</a>`],
+    ["Company / store", (r) => `${esc(r.company)}${r.store_url ? `<br><a href="${esc(r.store_url)}" target="_blank" rel="noopener">${esc(r.store_url)}</a>` : ""}`],
+    ["Plan", (r) => esc(r.plan)],
+    ["Stage", (r) => pill(r.stage)],
+  ])}
 <h2>Leads</h2>${t(leads, [
     ["When", (r) => esc(r.created_at)],
     ["Who", (r) => `${esc(r.name)}<br><a href="mailto:${esc(r.email)}">${esc(r.email)}</a>${r.phone ? "<br>" + esc(r.phone) : ""}`],
