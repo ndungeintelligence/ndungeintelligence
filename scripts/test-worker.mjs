@@ -65,7 +65,7 @@ globalThis.fetch = async (input, init = {}) => {
 };
 
 const { default: worker } = await import(join(root, "src", "index.js"));
-const env = { DB, ASSETS, ENVIRONMENT: "local", EMAIL_MODE: "live", NOTIFY_EMAIL: "ndungeintelligence@gmail.com", FROM_NAME: "Ngomso",
+const env = { DB, ASSETS, ENVIRONMENT: "local", EMAIL_MODE: "live", NOTIFY_EMAIL: "ndungeintelligence@gmail.com", FROM_NAME: "Ngomso Intelligence",
   GMAIL_CLIENT_ID: "id", GMAIL_CLIENT_SECRET: "secret", GMAIL_REFRESH_TOKEN: "refresh", PAYSTACK_SECRET_KEY: SK, ADMIN_PASSWORD: "local-admin" };
 
 async function call(path, init = {}) {

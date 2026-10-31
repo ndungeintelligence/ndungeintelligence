@@ -1,4 +1,4 @@
-/* Ngomso — interactions & generative visuals (no dependencies) */
+/* Ngomso Intelligence — interactions & generative visuals (no dependencies) */
 (() => {
   "use strict";
   const $ = (s, r = document) => r.querySelector(s);
@@ -71,11 +71,26 @@
     const p = document.createElement("span"); p.className = "field-error"; p.textContent = v;
     (input.closest("label") || input.parentElement).appendChild(p);
   });
+  const OWNER = "ndungeintelligence@gmail.com";
   async function post(url, form) {
     const data = Object.fromEntries(new FormData(form));
-    const res = await fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(data) });
+    let res;
+    try { res = await fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(data) }); }
+    catch { return { offline: true, data }; }
+    const isJson = (res.headers.get("content-type") || "").includes("application/json");
+    if (!isJson && [404, 405, 501].includes(res.status)) return { offline: true, data };
     const body = await res.json().catch(() => ({ ok: false, error: "Unexpected response." }));
-    return { res, body };
+    return { res, body, data };
+  }
+  // Static-only hosting (no API yet): hand the message to the visitor's email app instead.
+  function mailFallback(form, subject, lines) {
+    const body = lines.filter(Boolean).join("\n");
+    const href = `mailto:${OWNER}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const box = document.createElement("div");
+    box.className = "sent";
+    box.innerHTML = `<p class="eyebrow">Almost there</p><h3 class="h3">Send it from your email.</h3><p class="lede" style="margin-top:12px">We've opened a pre-filled email for you. If nothing opened, email <b style="user-select:all">${OWNER}</b> or <a class="link-arrow" href="${href}">open the email again</a>.</p>`;
+    form.replaceWith(box);
+    location.href = href;
   }
   const busy = (form, on, label) => { const b = $("button[type=submit]", form); if (!b) return; if (on) { b.dataset.label = b.innerHTML; b.innerHTML = label; b.disabled = true; } else { b.innerHTML = b.dataset.label || b.innerHTML; b.disabled = false; } };
 
@@ -86,7 +101,9 @@
     form.addEventListener("submit", async (e) => {
       e.preventDefault(); clearErrors(form); setStatus(form, ""); busy(form, true, "Sending…");
       try {
-        const { body } = await post("/api/contact", form);
+        const r = await post("/api/contact", form);
+        if (r.offline) { const d = r.data; mailFallback(form, `Brief from ${d.name || "website"}${d.company ? " · " + d.company : ""}`, [`Name: ${d.name}`, `Email: ${d.email}`, d.phone && `Phone: ${d.phone}`, d.company && `Company: ${d.company}`, d.industry && `Industry: ${d.industry}`, `Interest: ${d.interest}`, `Budget: ${d.budget}`, "", d.message]); return; }
+        const { body } = r;
         if (body.ok) {
           form.innerHTML = `<div class="sent"><p class="eyebrow">Brief received</p><h3 class="h3">Thank you — it's with us.</h3><p class="lede" style="margin-top:12px">A confirmation is on its way to your inbox. A senior engineer will respond within one business day.</p></div>`;
         } else { showErrors(form, body.errors); setStatus(form, body.error || "Please check the highlighted fields.", "err"); }
@@ -97,7 +114,7 @@
 
   $$('form[data-form="subscribe"]').forEach((form) => form.addEventListener("submit", async (e) => {
     e.preventDefault(); clearErrors(form); busy(form, true, "…");
-    try { const { body } = await post("/api/subscribe", form); if (body.ok) { setStatus(form, "You're on the list. Welcome.", "ok"); form.reset(); } else setStatus(form, body.errors?.email || body.error || "Please try again.", "err"); }
+    try { const r = await post("/api/subscribe", form); if (r.offline) { mailFallback(form, "Subscribe me to Ngomso Intelligence field notes", [`Email: ${r.data.email}`]); return; } const { body } = r; if (body.ok) { setStatus(form, "You're on the list. Welcome.", "ok"); form.reset(); } else setStatus(form, body.errors?.email || body.error || "Please try again.", "err"); }
     catch { setStatus(form, "Network error — please try again.", "err"); }
     busy(form, false);
   }));
@@ -116,7 +133,9 @@
   $$('form[data-form="checkout"]').forEach((form) => form.addEventListener("submit", async (e) => {
     e.preventDefault(); clearErrors(form); setStatus(form, ""); busy(form, true, "Opening secure checkout…");
     try {
-      const { body } = await post("/api/checkout", form);
+      const r = await post("/api/checkout", form);
+      if (r.offline) { const d = r.data, t = $(".checkout__title", dialog).textContent, pr = $(".checkout__price", dialog).textContent; const href = `mailto:${OWNER}?subject=${encodeURIComponent("Booking: " + t)}&body=${encodeURIComponent([`Name: ${d.name}`, `Email: ${d.email}`, d.company ? `Company: ${d.company}` : "", `Engagement: ${t} (${pr})`, "", "Please send me an invoice or payment link."].filter(Boolean).join("\n"))}`; setStatus(form, `Online payment opens soon. We've opened an email to book this — or email ${OWNER} and we'll send an invoice.`, "ok"); busy(form, false); location.href = href; return; }
+      const { body } = r;
       if (body.ok && body.authorization_url) { location.href = body.authorization_url; return; }
       showErrors(form, body.errors); setStatus(form, body.error || "Please check the fields above.", "err");
     } catch { setStatus(form, "Network error — please try again.", "err"); }

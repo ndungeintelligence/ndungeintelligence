@@ -2,7 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   // ── prod (top level) ─────────────────────────────────────────────
   // Deployed from the `main` branch into the GitHub "prod" environment.
-  "name": "ngomso",
+  "name": "ngomso-intelligence",
   "main": "src/index.js",
   "compatibility_date": "2026-06-01",
   "workers_dev": true,
@@ -19,7 +19,7 @@
     "ENVIRONMENT": "prod",
     "EMAIL_MODE": "live",
     "NOTIFY_EMAIL": "ndungeintelligence@gmail.com",
-    "FROM_NAME": "Ngomso"
+    "FROM_NAME": "Ngomso Intelligence"
   },
   "d1_databases": [
     {
@@ -33,13 +33,13 @@
   // "routes": [{ "pattern": "ndungeintelligence.com", "custom_domain": true }],
 
   "env": {
-    // ── dev: `dev` branch → worker "ngomso-dev" ──────
+    // ── dev: `dev` branch → worker "ngomso-intelligence-dev" ──────
     "dev": {
       "vars": {
         "ENVIRONMENT": "dev",
         "EMAIL_MODE": "owner-only",
         "NOTIFY_EMAIL": "ndungeintelligence@gmail.com",
-        "FROM_NAME": "Ngomso (dev)"
+        "FROM_NAME": "Ngomso Intelligence (dev)"
       },
       "d1_databases": [
         {
@@ -50,13 +50,13 @@
         }
       ]
     },
-    // ── test: `test` branch → worker "ngomso-test" ───
+    // ── test: `test` branch → worker "ngomso-intelligence-test" ───
     "test": {
       "vars": {
         "ENVIRONMENT": "test",
         "EMAIL_MODE": "owner-only",
         "NOTIFY_EMAIL": "ndungeintelligence@gmail.com",
-        "FROM_NAME": "Ngomso (test)"
+        "FROM_NAME": "Ngomso Intelligence (test)"
       },
       "d1_databases": [
         {

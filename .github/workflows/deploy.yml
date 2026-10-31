@@ -1,9 +1,9 @@
 name: Deploy
 
 # Branch → GitHub environment → Cloudflare Worker
-#   dev   → dev   → ngomso-dev
-#   test  → test  → ngomso-test
-#   main  → prod  → ngomso
+#   dev   → dev   → ngomso-intelligence-dev
+#   test  → test  → ngomso-intelligence-test
+#   main  → prod  → ngomso-intelligence
 on:
   push:
     branches: [dev, test, main]
@@ -82,6 +82,6 @@ jobs:
 
       - name: Summary
         run: |
-          NAME=ngomso; if [ "$TARGET" != "prod" ]; then NAME="ngomso-$TARGET"; fi
+          NAME=ngomso-intelligence; if [ "$TARGET" != "prod" ]; then NAME="ngomso-intelligence-$TARGET"; fi
           echo "### Deployed \`$NAME\` to **$TARGET**" >> "$GITHUB_STEP_SUMMARY"
           echo "Health check: \`https://$NAME.<your-subdomain>.workers.dev/api/health\`" >> "$GITHUB_STEP_SUMMARY"

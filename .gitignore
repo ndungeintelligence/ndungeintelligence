@@ -4,3 +4,7 @@ dist/
 .dev.vars
 .secrets.json
 *.log
+
+# Private business documents — never commit to this public repo
+docs/investor/
+docs/funding/

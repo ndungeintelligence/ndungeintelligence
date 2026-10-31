@@ -24,7 +24,7 @@ export async function renderAdmin(env) {
   const pill = (s) => `<span class="pill ${esc(s)}">${esc(s)}</span>`;
 
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex"><title>Admin · Ngomso</title>
+<meta name="robots" content="noindex"><title>Admin · Ngomso Intelligence</title>
 <link rel="icon" href="/assets/brand/favicon.svg">
 <style>
 :root{--ink:#0A0A0B;--paper:#F2F0EC;--line:#E4E1DB;--mute:#8D8A93;--lilac:#8B7BB8;--ember:#C8A27C}

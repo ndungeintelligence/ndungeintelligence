@@ -1,4 +1,4 @@
-# Ngomso — setup guide
+# Ngomso Intelligence — setup guide
 
 Everything in the code is done. These are the one-time account steps only you can do, because they involve your logins and secret keys. Do them in this order; each takes 2–10 minutes.
 
@@ -17,9 +17,9 @@ Everything in the code is done. These are the one-time account steps only you ca
 
 | Branch | GitHub environment | Cloudflare Worker | D1 database | Emails go to |
 |--------|-------------------|-------------------|-------------|--------------|
-| `dev`  | `dev`  | `ngomso-dev`  | `ndunge-intelligence-dev`  | **you only** (tagged `[DEV → client@…]`) |
-| `test` | `test` | `ngomso-test` | `ndunge-intelligence-test` | **you only** (tagged `[TEST → …]`) |
-| `main` | `prod` | `ngomso`      | `ndunge-intelligence-prod` | real clients |
+| `dev`  | `dev`  | `ngomso-intelligence-dev`  | `ndunge-intelligence-dev`  | **you only** (tagged `[DEV → client@…]`) |
+| `test` | `test` | `ngomso-intelligence-test` | `ndunge-intelligence-test` | **you only** (tagged `[TEST → …]`) |
+| `main` | `prod` | `ngomso-intelligence`      | `ndunge-intelligence-prod` | real clients |
 
 Push to a branch → GitHub Actions builds the site, applies database migrations, deploys the Worker and syncs secrets for that environment. Pull requests run tests first. Promote work by merging `dev` → `test` → `main`.
 
@@ -60,7 +60,7 @@ Sign in to Google as **ndungeintelligence@gmail.com** for all of this.
 1. <https://console.cloud.google.com> → create a project called `ndunge-intelligence`.
 2. **APIs & Services → Library** → search **Gmail API** → **Enable**.
 3. **Google Auth Platform** (OAuth consent screen) → **Get started**:
-   - App name *Ngomso*, support email `ndungeintelligence@gmail.com`, audience **External**.
+   - App name *Ngomso Intelligence*, support email `ndungeintelligence@gmail.com`, audience **External**.
    - Under **Audience**, click **Publish app** so the status is **In production**. (In *Testing* mode Google expires the token after 7 days and emails stop. An unverified app is fine for sending from your own account.)
 4. **Clients → Create client** → type **Web application** → Authorised redirect URI: `https://developers.google.com/oauthplayground` → Create. Copy the **Client ID** and **Client secret**.
 5. Open <https://developers.google.com/oauthplayground>:
@@ -84,8 +84,8 @@ Gmail allows roughly 500 sends a day from a free account — plenty for now. Whe
    - `dev` and `test` → your **test** secret key (`sk_test_…`)
    - `prod` → your **live** secret key (`sk_live_…`) once Paystack has activated your business.
 3. Webhook URLs (same page):
-   - Test webhook → `https://ngomso-test.<your-subdomain>.workers.dev/api/paystack/webhook`
-   - Live webhook → `https://ngomso.<your-subdomain>.workers.dev/api/paystack/webhook` (or your domain)
+   - Test webhook → `https://ngomso-intelligence-test.<your-subdomain>.workers.dev/api/paystack/webhook`
+   - Live webhook → `https://ngomso-intelligence.<your-subdomain>.workers.dev/api/paystack/webhook` (or your domain)
 4. Test card details are in Paystack's docs ("Test payments").
 
 Prices live in `src/offers.js` (amounts in cents). Edit them there — the Engage page and the API both read that file.
